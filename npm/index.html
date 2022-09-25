@@ -3,6 +3,29 @@
   <head>
     <meta charset="utf-8">
     <title>Evolution Sim</title>
+    <style>
+      body {
+        margin: 0;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .flex-row {
+        display: flex;
+      }
+
+      .flex-row:not(:first-of-type) {
+        margin-top: 2rem;
+      }
+
+      canvas#sim-canvas {
+        box-sizing: border-box;
+        border: 1px solid black;
+      }
+    </style>
   </head>
   <body>
     <noscript>This page contains webassembly and javascript content, please enable javascript in your browser.</noscript>

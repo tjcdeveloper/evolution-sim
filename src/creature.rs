@@ -1,8 +1,5 @@
-use wasm_bindgen::prelude::wasm_bindgen;
-
 use crate::cell::CellContent;
 
-#[wasm_bindgen]
 pub struct Creature {
     brain: Brain,
     id: String
