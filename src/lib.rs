@@ -1,12 +1,13 @@
 mod cell;
 mod config;
 mod creature;
+mod manager;
 mod utils;
 
 use crate::config::Config;
-use utils::set_panic_hook;
-use wasm_bindgen::{prelude::*, JsCast};
-use web_sys::{CanvasRenderingContext2d, HtmlCanvasElement, HtmlElement};
+use manager::Manager;
+use wasm_bindgen::{prelude::*};
+use web_sys::{CanvasRenderingContext2d};
 
 // When the `wee_alloc` feature is enabled, use `wee_alloc` as the global
 // allocator.
@@ -16,36 +17,9 @@ static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
 
 #[wasm_bindgen(start)]
 pub fn run() -> Result<(), JsValue> {
-    let config = Config::create(500, 500, 10, 10, true);
+    let manager = Manager::init();
 
-    if config.is_debug() {
-        set_panic_hook();
-    }
-
-    let window = web_sys::window().expect("no global `window` exists");
-    let document = window.document().expect("should habe a document on window");
-    let body = document.body().expect("document should have a body");
-    let canvas = document.create_element("canvas")?.dyn_into::<HtmlCanvasElement>()?;
-    canvas.set_attribute(&"id", &"sim-canvas")?;
-    canvas.set_width(config.get_width());
-    canvas.set_height(config.get_height()); 
-    let ctx = canvas.get_context("2d").unwrap().unwrap().dyn_into::<CanvasRenderingContext2d>()?;
-
-    let canvas_wrapper = document.create_element("section")?.dyn_into::<HtmlElement>()?;
-    canvas_wrapper.set_class_name("flex-row");
-    canvas_wrapper.append_child(&canvas)?;
-
-    body.append_child(&canvas_wrapper)?;
-
-    if config.is_debug() {
-        let debug_bar = document.create_element("section")?.dyn_into::<HtmlElement>()?;
-        debug_bar.set_class_name("flex-row");
-        debug_bar.set_inner_text("DEBUG BAR");
-        
-        body.append_child(&debug_bar)?;
-    }
-
-    draw(&ctx, &config);
+    draw(manager.get_canvas_context(), manager.get_config());
 
     Ok(())
 }
